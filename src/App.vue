@@ -5,7 +5,10 @@
   let newTodo = ref("")
 
   function popUpTodo(){
-    todos.value.push(newTodo.value)
+    todos.value.push({
+      text: newTodo.value,
+      complete:false
+      })
     newTodo.value = ""
   }
   function deleteTodo(index){
@@ -18,10 +21,11 @@
   <ol>
   <li v-for="(todo, index) in todos">
     <button id="icon" @click="deleteTodo(index)">🗑</button>
-  {{ todo }}
+  {{ todo.text }}
+  <input type="checkbox" v-model="todo.complete">
   </li>
 </ol>
-<p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox"></p>
+<p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox" placeholder="Click Me to Start"></p>
 <p><button @click="popUpTodo" id="submitThing">Add Todo</button></p>
 </template>
 
@@ -66,7 +70,10 @@ p{
 }
 #inputBox{
   top: 145px;
-    position: relative;
+  position: relative;
+  background-color: transparent;
+  border-radius: 8px;
+
 }
 
 </style>
