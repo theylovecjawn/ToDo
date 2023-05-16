@@ -1,7 +1,7 @@
 <script setup>
   import {ref, watch} from 'vue'
 
-  let todos = ref(JSON.parse(window.localStorage.getItem('todos')))
+  let todos = ref(JSON.parse(window.localStorage.getItem('todos')) ??[])
 
 
 
@@ -26,11 +26,12 @@
 
 <template>
   <h1>My Todo List</h1>
-  <ol>
+  <ol id="scroll">
   <li v-for="(todo, index) in todos">
-    <button id="icon" @click="deleteTodo(index)">🗑</button>
-  {{ todo.text }}
-  <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
+    <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
+  <span :class="{completed: todo.complete}">{{ todo.text }}</span>
+  
+  <button class="icon" @click="deleteTodo(index)">🗑</button>
   </li>
 </ol>
 <p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox" placeholder="Click Me to Start"></p>
@@ -38,11 +39,15 @@
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
 body{
-  background-color: paleturquoise;
+  font-family: 'Shadows Into Light', cursive;
+  background-color: black;
 }
 h1{
+  text-decoration: underline;
   text-align: center;
+  color: white;
 
 }
 li{
@@ -55,13 +60,13 @@ align-items: center;
 p{
   text-align: center;
 }
-#icon{
+.icon{
   background-color: transparent;
   border: none;
 
 }
-#icon:hover{
-  background-color: brown;
+.icon:hover{
+  background-color: rgb(198, 179, 179);
 }
 #submitThing{
   margin: 5px 3px 10px 5px;
@@ -81,6 +86,7 @@ p{
   position: relative;
   background-color: transparent;
   border-radius: 8px;
+  color: white;
 
 }
 /* Customize the label (the container) */
@@ -150,6 +156,17 @@ p{
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-
+.completed{
+  color: #ccc;
+  text-decoration: line-through;
+  text-decoration-color: black;
+}
+#scroll{
+  background-color: brown;
+  border-radius: 1111px;
+  margin: auto;
+  max-height: 500px;
+  overflow-y: scroll;
+}
 
 </style>
