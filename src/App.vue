@@ -1,5 +1,6 @@
 <script setup>
   import {ref, watch} from 'vue'
+  let filter = ref('all')
 
   let todos = ref(JSON.parse(window.localStorage.getItem('todos')) ??[])
 
@@ -9,6 +10,20 @@
     window.localStorage.setItem('todos', JSON.stringify(value))
   }, {deep: true})
   
+  function todoFilter(todo){
+    if (filter.value == "active"){
+      return todo.complete == false
+    }
+    else if (filter.value == 'complete') {
+      return todo.complete == true
+      
+    }
+    else {
+      return true
+    }
+  }
+
+
   let newTodo = ref("")
 
 
@@ -26,14 +41,25 @@
 
 <template>
   <h1>My Todo List</h1>
+
+
   <ol id="scroll">
-  <li v-for="(todo, index) in todos">
+  <li v-for="(todo, index) in todos.filter(todoFilter)" >
     <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
   <span :class="{completed: todo.complete}">{{ todo.text }}</span>
   
   <button class="icon" @click="deleteTodo(index)">🗑</button>
   </li>
 </ol>
+<label class="form-control"><input name="filter" type="radio" value="all" v-model="filter"></label>
+  <label class="bigger">All      </label>
+
+  <label class="form-control"><input name="filter" type="radio" value="active" v-model="filter"></label>
+  <label class="bigger">Active      </label>
+
+  <label class="form-control"><input name="filter" type="radio" value="complete" v-model="filter"></label>
+  <label class="bigger">Completed      </label>
+
 <p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox" placeholder="Click Me to Start"></p>
 <p><button @click="popUpTodo" id="submitThing">Add Todo</button></p>
 </template>
@@ -43,6 +69,8 @@
 body{
   font-family: 'Shadows Into Light', cursive;
   background-color: black;
+  color: aliceblue;
+  text-align: center;
 }
 h1{
   text-decoration: underline;
@@ -50,6 +78,114 @@ h1{
   color: white;
 
 }
+.form-control {
+  font-family: system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+}
+
+
+
+
+
+
+:root {
+  --form-control-color: rebeccapurple;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+form {
+  display: grid;
+  place-content: center;
+  min-height: 100vh;
+}
+
+.form-control {
+  font-family: system-ui, sans-serif;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.1;
+  display: inline-grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+}
+
+.form-control + .form-control {
+  margin-top: 1em;
+}
+
+.form-control:focus-within {
+  color: var(--form-control-color);
+}
+
+input[type="radio"] {
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: var(--form-background);
+  /* Not removed via appearance */
+  margin: 0;
+
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 50%;
+  transform: translateY(-0.075em);
+
+  display: grid;
+  place-content: center;
+}
+
+input[type="radio"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  /* Windows High Contrast Mode */
+  background-color: CanvasText;
+}
+
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="radio"]:focus {
+  outline: max(2px, 0.15em) solid currentColor;
+  outline-offset: max(2px, 0.15em);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 li{
   list-style-position: inside;
   text-align: center;
@@ -72,7 +208,7 @@ p{
   margin: 5px 3px 10px 5px;
     padding: 5px 10px;
     border-radius: 7px;
-    background-color: #90EE90;
+    background-color: rgb(146, 202, 221);
     border-style: none;
     font-size: 20px;
     top: 150px;
@@ -103,6 +239,7 @@ p{
   user-select: none;
 }
 
+
 /* Hide the browser's default checkbox */
 .container input {
   position: absolute;
@@ -129,7 +266,7 @@ p{
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #aaa;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -162,11 +299,19 @@ p{
   text-decoration-color: black;
 }
 #scroll{
-  background-color: brown;
+  background-color: rgb(146, 202, 221);
   border-radius: 1111px;
   margin: auto;
-  max-height: 500px;
+  max-height: 442px;
   overflow-y: scroll;
 }
+.bigger{
+  font-size: 30px;
+}
+
+
+
+
+
 
 </style>
