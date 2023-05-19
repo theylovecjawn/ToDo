@@ -9,6 +9,10 @@
   watch(todos, function(value){
     window.localStorage.setItem('todos', JSON.stringify(value))
   }, {deep: true})
+
+  function activeFilter(todo){
+    return todo.complete == false
+  }
   
   function todoFilter(todo){
     if (filter.value == "active"){
@@ -43,14 +47,19 @@
   <h1>My Todo List</h1>
 
 
-  <ol id="scroll">
+  <ul id="scroll">
   <li v-for="(todo, index) in todos.filter(todoFilter)" >
     <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
   <span :class="{completed: todo.complete}">{{ todo.text }}</span>
+  <button class="icon" @click="deleteTodo(index)">❌</button>
+  <hr>
   
-  <button class="icon" @click="deleteTodo(index)">🗑</button>
+  
   </li>
-</ol>
+</ul>
+<p v-if="todos.length > 0">
+
+  <p>{{todos.filter(activeFilter).length}} items left</p>
 <label class="form-control"><input name="filter" type="radio" value="all" v-model="filter"></label>
   <label class="bigger">All      </label>
 
@@ -59,18 +68,21 @@
 
   <label class="form-control"><input name="filter" type="radio" value="complete" v-model="filter"></label>
   <label class="bigger">Completed      </label>
+</p>        
 
 <p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox" placeholder="Click Me to Start"></p>
 <p><button @click="popUpTodo" id="submitThing">Add Todo</button></p>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300&family=Shadows+Into+Light&family=Smokum&display=swap');
 body{
-  font-family: 'Shadows Into Light', cursive;
+  font-family: 'Rajdhani', sans-serif;
+font-family: 'Shadows Into Light', cursive;
+font-family: 'Smokum', cursive;
   background-color: black;
   color: aliceblue;
-  text-align: center;
+  
 }
 h1{
   text-decoration: underline;
@@ -94,7 +106,7 @@ h1{
 
 
 :root {
-  --form-control-color: rebeccapurple;
+  --form-control-color: rgb(146, 202, 221);
 }
 
 *,
@@ -185,44 +197,49 @@ input[type="radio"]:focus {
 
 
 
-
 li{
   list-style-position: inside;
-  text-align: center;
+  margin: 0 auto;
+  max-width: 500px;
 }
-#submitThing{
-align-items: center;
-}
+
 p{
   text-align: center;
 }
 .icon{
   background-color: transparent;
   border: none;
+  float: right;
+  display: none;
 
 }
 .icon:hover{
   background-color: rgb(198, 179, 179);
 }
+
+li:hover > .icon{
+  display: inline;
+}
 #submitThing{
-  margin: 5px 3px 10px 5px;
+  
     padding: 5px 10px;
     border-radius: 7px;
     background-color: rgb(146, 202, 221);
     border-style: none;
     font-size: 20px;
-    top: 150px;
-    position: relative;
+    top: 700px;
+    position: static;
 }
 #submitThing:hover{
   background-color:beige;
 }
 #inputBox{
-  top: 145px;
-  position: relative;
+  top: 750px;
+  position: static;
   background-color: transparent;
   border-radius: 8px;
   color: white;
+  
 
 }
 /* Customize the label (the container) */
