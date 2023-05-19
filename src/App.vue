@@ -52,7 +52,6 @@ function deleteTodo(index) {
 
 
 </script>
-
 <template>
   <h1>My Todo List</h1>
 
