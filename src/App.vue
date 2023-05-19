@@ -1,46 +1,56 @@
 <script setup>
-  import {ref, watch} from 'vue'
-  let filter = ref('all')
+import { ref, watch } from 'vue'
+let filter = ref('all')
 
-  let todos = ref(JSON.parse(window.localStorage.getItem('todos')) ??[])
+let todos = ref(JSON.parse(window.localStorage.getItem('todos')) ?? [])
+
+window.alert("Hey Welcome to your own personal Todo Friend! Please remember if you open this  on a different browser it will not load your pre-existing Todos.")
 
 
+watch(todos, function (value) {
+  window.localStorage.setItem('todos', JSON.stringify(value))
+}, { deep: true })
 
-  watch(todos, function(value){
-    window.localStorage.setItem('todos', JSON.stringify(value))
-  }, {deep: true})
+function activeFilter(todo) {
+  return todo.complete == false
+}
 
-  function activeFilter(todo){
+function todoFilter(todo) {
+  if (filter.value == "active") {
     return todo.complete == false
   }
-  
-  function todoFilter(todo){
-    if (filter.value == "active"){
-      return todo.complete == false
-    }
-    else if (filter.value == 'complete') {
-      return todo.complete == true
-      
-    }
-    else {
-      return true
-    }
+  else if (filter.value == 'complete') {
+    return todo.complete == true
+
   }
-
-
-  let newTodo = ref("")
-
-
-  function popUpTodo(){
-    todos.value.push({
-      text: newTodo.value,
-      complete:false
-      })
-    newTodo.value = ""
+  else {
+    return true
   }
-  function deleteTodo(index){
-    todos.value.splice(index, 1)  
-  }
+}
+function popUpClear() {
+  todos.value = []
+}
+
+
+
+let newTodo = ref("")
+
+
+function popUpTodo() {
+  todos.value.push({
+    text: newTodo.value,
+    complete: false
+  })
+  newTodo.value = ""
+}
+function deleteTodo(index) {
+  todos.value.splice(index, 1)
+
+}
+
+
+
+
 </script>
 
 <template>
@@ -48,48 +58,49 @@
 
 
   <ul id="scroll">
-  <li v-for="(todo, index) in todos.filter(todoFilter)" >
-    <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
-  <span :class="{completed: todo.complete}">{{ todo.text }}</span>
-  <button class="icon" @click="deleteTodo(index)">❌</button>
-  <hr>
-  
-  
-  </li>
-</ul>
-<p v-if="todos.length > 0">
+    <li v-for="(todo, index) in todos.filter(todoFilter)">
+      <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
+      <span :class="{ completed: todo.complete }">{{ todo.text }}</span>
+      <button class="icon" @click="deleteTodo(index)">❌</button>
+      <hr>
 
-  <p>{{todos.filter(activeFilter).length}} items left</p>
-<label class="form-control"><input name="filter" type="radio" value="all" v-model="filter"></label>
-  <label class="bigger">All      </label>
+
+    </li>
+  </ul>
+  <p v-if="todos.length > 0">
+
+  <p>{{ todos.filter(activeFilter).length }} items left</p>
+  <label class="form-control"><input name="filter" type="radio" value="all" v-model="filter"></label>
+  <label class="bigger">All </label>
 
   <label class="form-control"><input name="filter" type="radio" value="active" v-model="filter"></label>
-  <label class="bigger">Active      </label>
+  <label class="bigger">Active </label>
 
   <label class="form-control"><input name="filter" type="radio" value="complete" v-model="filter"></label>
-  <label class="bigger">Completed      </label>
-</p>        
+  <label class="bigger">Completed </label>
+  </p>
 
-<p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox" placeholder="Click Me to Start"></p>
-<p><button @click="popUpTodo" id="submitThing">Add Todo</button></p>
+  <p><input v-model="newTodo" @keydown.enter="popUpTodo" id="inputBox" placeholder="Click Me to Start"></p>
+  <p><button @click="popUpTodo" id="submitThing">Add Todo</button></p>
+  <p><button @click="popUpClear" id="clearThing">Clear All!</button></p>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300&family=Shadows+Into+Light&family=Smokum&display=swap');
-body{
-  font-family: 'Rajdhani', sans-serif;
-font-family: 'Shadows Into Light', cursive;
-font-family: 'Smokum', cursive;
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100&family=Rajdhani:wght@300&family=Shadows+Into+Light&family=Smokum&display=swap');
+body {
+  font-family: 'IBM Plex Mono', monospace;
   background-color: black;
   color: aliceblue;
-  
+
 }
-h1{
+
+h1 {
   text-decoration: underline;
   text-align: center;
   color: white;
 
 }
+
 .form-control {
   font-family: system-ui, sans-serif;
   font-size: 2rem;
@@ -135,7 +146,7 @@ form {
   gap: 0.5em;
 }
 
-.form-control + .form-control {
+.form-control+.form-control {
   margin-top: 1em;
 }
 
@@ -197,51 +208,74 @@ input[type="radio"]:focus {
 
 
 
-li{
+li {
   list-style-position: inside;
   margin: 0 auto;
   max-width: 500px;
+  color: black;
 }
 
-p{
+p {
   text-align: center;
 }
-.icon{
+
+.icon {
   background-color: transparent;
   border: none;
   float: right;
   display: none;
 
 }
-.icon:hover{
+
+.icon:hover {
   background-color: rgb(198, 179, 179);
 }
 
-li:hover > .icon{
+li:hover>.icon {
   display: inline;
 }
-#submitThing{
-  
-    padding: 5px 10px;
-    border-radius: 7px;
-    background-color: rgb(146, 202, 221);
-    border-style: none;
-    font-size: 20px;
-    top: 700px;
-    position: static;
+
+#clearThing {
+  padding: 5px 10px;
+  border-radius: 7px;
+  background-color: rgb(146, 202, 221);
+  border-style: none;
+  font-size: 20px;
+  top: 700px;
+  position: static;
+  font-family: 'IBM Plex Mono', monospace;
 }
-#submitThing:hover{
-  background-color:beige;
+
+#clearThing:hover {
+  background-color: beige;
 }
-#inputBox{
+
+#submitThing {
+
+  padding: 5px 10px;
+  border-radius: 7px;
+  background-color: rgb(146, 202, 221);
+  border-style: none;
+  font-size: 20px;
+  top: 700px;
+  position: static;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+#submitThing:hover {
+  background-color: beige;
+}
+
+#inputBox {
   top: 750px;
   position: static;
   background-color: transparent;
   border-radius: 8px;
   color: white;
-  
+
 
 }
+
 /* Customize the label (the container) */
 .container {
   margin: 20px;
@@ -277,12 +311,12 @@ li:hover > .icon{
 }
 
 /* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
+.container:hover input~.checkmark {
   background-color: #ccc;
 }
 
 /* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
+.container input:checked~.checkmark {
   background-color: #aaa;
 }
 
@@ -294,7 +328,7 @@ li:hover > .icon{
 }
 
 /* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
+.container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -310,25 +344,23 @@ li:hover > .icon{
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-.completed{
+
+.completed {
   color: #ccc;
   text-decoration: line-through;
   text-decoration-color: black;
 }
-#scroll{
+
+#scroll {
   background-color: rgb(146, 202, 221);
+  box-shadow: 5px 10px rgb(222, 241, 248);
+ 
   border-radius: 1111px;
   margin: auto;
   max-height: 442px;
   overflow-y: scroll;
 }
-.bigger{
+
+.bigger {
   font-size: 30px;
-}
-
-
-
-
-
-
-</style>
+}</style>
